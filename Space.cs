@@ -12,18 +12,21 @@ namespace GravitySim
             bodies = new List<Body>(0);
         }
 
-        public void Update(float GravitationalConst)
+        public void Update(float GravitationalConst, float deltaTime)
         {
             foreach (var body in this.bodies)
             {
                 body.Update();
             }
 
-            this.SimulateGravity(GravitationalConst);
-            this.CollisionRespose();
+            this.SimulateGravity(GravitationalConst, deltaTime);
+            for (var i = 0; i < 5; i++)
+            {
+                this.CollisionRespose(deltaTime / 5);
+            }
         }
 
-        public void SimulateGravity(float GravitationalConst)
+        public void SimulateGravity(float GravitationalConst, float deltaTime)
         {
             foreach (Body body01 in this.bodies)
             {
@@ -35,13 +38,13 @@ namespace GravitySim
                         float distance = (float) Math.Sqrt(directionVector.X * directionVector.X + directionVector.Y * directionVector.Y);
                         Vector2 directionNormal = directionVector / distance;
                             
-                        body02.force += (directionNormal) * GravitationalConst * body02.mass * body01.mass / (distance);
+                        body02.force += (directionNormal) * GravitationalConst * body02.mass * body01.mass / (distance * distance) * deltaTime * 120;
                     }
                 }
             }
         }
 
-        public void CollisionRespose()
+        public void CollisionRespose(float deltaTime)
         {
             foreach (var body01 in this.bodies)
             {
@@ -58,8 +61,8 @@ namespace GravitySim
                         Vector2 pentrateResolve = normal * depth / 2;
 
                         // Executing Penetration
-                        body01.pos += pentrateResolve;
-                        body02.pos -= pentrateResolve;
+                        body01.pos += pentrateResolve * deltaTime * 120;
+                        body02.pos -= pentrateResolve * deltaTime * 120;
                     }
                 }
             }

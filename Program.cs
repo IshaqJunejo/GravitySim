@@ -14,11 +14,17 @@ namespace GravitySim
             // Universal Gravitational Constant
             float G = 0.1f;
 
+            // delta time
+            float deltaTime;
+
             Space galaxy = new Space();
 
-            for (int i = 0; i < 750; i++)
+            var centerBody = new Body(Width/2, Height/2, 0, 0, 25, 30, Color.GREEN);
+            galaxy.bodies.Add(centerBody);
+
+            for (int i = 0; i < 90; i++)
             {
-                var newBody = new Body(Raylib.GetRandomValue(100, Width - 100), Raylib.GetRandomValue(100, Height - 100), 0, 0, 1, 4, Color.DARKGRAY);
+                var newBody = new Body(Width/2 + (float)(Math.Cos(i * 4 * Math.PI / 180) * 240), Height/2 + (float)(Math.Sin(i * 4 * Math.PI / 180) * 240), (float)(Math.Cos((i * 4 - 90) * Math.PI / 180) * 0.2), (float)(Math.Sin((i * 4 - 90) * Math.PI / 180) * 0.2), 0.2f, 5, Color.DARKGRAY);
                 galaxy.bodies.Add(newBody);
             }
 
@@ -26,15 +32,9 @@ namespace GravitySim
             Raylib.SetTargetFPS(120);
             while (!Raylib.WindowShouldClose())
             {
-                if (Raylib.IsKeyDown(KeyboardKey.KEY_SPACE))
-                {
-                    G = 2.5f;
-                }else
-                {
-                    G = 0.1f;
-                }
+                deltaTime = Raylib.GetFrameTime();
 
-                galaxy.Update(G);
+                galaxy.Update(G, deltaTime);
 
                 // Drawing Section
                 Raylib.BeginDrawing();
