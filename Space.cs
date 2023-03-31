@@ -22,7 +22,7 @@ namespace GravitySim
             this.SimulateGravity(GravitationalConst, deltaTime);
             for (var i = 0; i < 5; i++)
             {
-                this.CollisionRespose(deltaTime / 5);
+                this.CollisionRespose(deltaTime / 5, GravitationalConst);
             }
         }
 
@@ -44,7 +44,7 @@ namespace GravitySim
             }
         }
 
-        public void CollisionRespose(float deltaTime)
+        public void CollisionRespose(float deltaTime, float GravitationalConst)
         {
             foreach (var body01 in this.bodies)
             {
@@ -63,6 +63,18 @@ namespace GravitySim
                         // Executing Penetration
                         body01.pos += pentrateResolve * deltaTime * 120;
                         body02.pos -= pentrateResolve * deltaTime * 120;
+
+                        // Calculating Repulsion
+                        Vector2 relativeVelocity = body01.vel - body02.vel;
+                        float seperatingVelocity = Vector2.Dot(normal, relativeVelocity);
+                        float newSeperatingVelocity = seperatingVelocity * -1;
+                        float seperatingVelocityDifference = newSeperatingVelocity - seperatingVelocity;
+                        float impulse = seperatingVelocityDifference / ((1/body01.mass) + (1/body02.mass));
+                        Vector2 impulseVector = impulse * normal;
+
+                        // Executing Repulsion
+                        body01.vel += impulseVector / body01.mass * deltaTime * 120;
+                        body02.vel -= impulseVector / body02.mass * deltaTime * 120;
                     }
                 }
             }

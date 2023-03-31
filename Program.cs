@@ -19,12 +19,18 @@ namespace GravitySim
 
             Space galaxy = new Space();
 
-            var centerBody = new Body(Width/2, Height/2, 0, 0, 25, 30, Color.GREEN);
+            var centerBody = new Body(Width/2, Height/2, 0, 0, 100, 30, Color.GRAY);
             galaxy.bodies.Add(centerBody);
 
             for (int i = 0; i < 90; i++)
             {
-                var newBody = new Body(Width/2 + (float)(Math.Cos(i * 4 * Math.PI / 180) * 240), Height/2 + (float)(Math.Sin(i * 4 * Math.PI / 180) * 240), (float)(Math.Cos((i * 4 - 90) * Math.PI / 180) * 0.2), (float)(Math.Sin((i * 4 - 90) * Math.PI / 180) * 0.2), 0.2f, 5, Color.DARKGRAY);
+                var newBody = new Body(Width/2 + (float)(Math.Cos(i * 4 * Math.PI / 180) * 180), Height/2 + (float)(Math.Sin(i * 4 * Math.PI / 180) * 180), (float)(Math.Cos((i * 4 - 90) * Math.PI / 180) * 0.5), (float)(Math.Sin((i * 4 - 90) * Math.PI / 180) * 0.5), 1, 3, Color.DARKGRAY);
+                galaxy.bodies.Add(newBody);
+            }
+
+            for (int i = 0; i < 180; i++)
+            {
+                var newBody = new Body(Width/2 + (float)(Math.Cos(i * 2 * Math.PI / 180) * 360), Height/2 + (float)(Math.Sin(i * 2 * Math.PI / 180) * 360), (float)(Math.Cos((i * 2 - 90) * Math.PI / 180) * -0.6), (float)(Math.Sin((i * 2 - 90) * Math.PI / 180) * -0.6), 1, 3, Color.DARKGRAY);
                 galaxy.bodies.Add(newBody);
             }
 
@@ -33,6 +39,12 @@ namespace GravitySim
             while (!Raylib.WindowShouldClose())
             {
                 deltaTime = Raylib.GetFrameTime();
+
+                if (Raylib.IsMouseButtonPressed(MouseButton.MOUSE_BUTTON_LEFT))
+                {
+                    var newBody = new Body(Raylib.GetMouseX(), Raylib.GetMouseY(), Raylib.GetRandomValue(-5, 5) / 10.0f, Raylib.GetRandomValue(-5, 5) / 10.0f, 1, 3, Color.DARKGRAY);
+                    galaxy.bodies.Add(newBody);
+                }
 
                 galaxy.Update(G, deltaTime);
 
